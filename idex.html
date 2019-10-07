@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Fun with html Canvas</title>
+    </head>
+    <body>
+        <canvas id="canvas" width="600px" height="600px"></canvas>
+        <Script>
+            //Lets Get our Canvas Element
+            const canvas = document.getElementById('canvas') 
+
+            //setting the width and hieght to size of the window
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+
+            //get our canvas context
+            const ctx = canvas.getContext('2d');
+            ctx.strokeStyle = '#feb236';//sets the colour property of the canvas for each stroke
+
+            ctx.lineJoin = 'round';//sets the the shape at which two lines join or meet
+
+            ctx.lineCap = 'round';// set the shape at both end of the lines
+
+            ctx.lineWidth =  50;
+            //create a drawing var to store value of current state
+            let drawing = false;
+            let lastX = 0;
+            let lastY = 0;
+            let hue  =  0;
+            let direction  =  true;
+
+            //create a funtion to darw
+            function draw(e){
+                    if(!drawing) return;
+                    ctx.strokeStyle = `hsl(${hue},100%,50%)`;
+                    ctx.beginPath();
+
+                    //start the line from
+                    ctx.moveTo(lastX, lastY);
+
+                    //then move to
+                    ctx.lineTo(e.offsetX,e.offsetY);
+
+                    //to udate the current 
+                    ctx.stroke();
+
+                    //then update to the current lastX and lastY 
+                    lastX = e.offsetX;  lastY = e.offsetY; //or [lastX, lastY] = [e.offsetX, e.offsetY]; 
+                    hue++; 
+
+                    //if the lineWidth is to greater or equal to 100 direction  = false ;
+                    if (ctx.lineWidth >=100 ) {
+                        direction = false;
+                    } 
+                   // less than or equal to 1 the direction should be true;
+                    if (ctx.lineWidth <= 1) {
+                        direction  = true;
+                    }
+
+                    //if the direction is true the lineWidth should increase 
+                    if(direction){
+                        ctx.lineWidth++;
+                        console.log(ctx.lineWidth);
+                        
+                    }
+                    else{
+                        ctx.lineWidth--;
+                        
+                    }
+            }
+            //  a function on mouse to update the current point at which the mouse was pressed to be equal to the ,mouse offset ;
+            canvas.addEventListener('mousedown', (e) =>  { drawing =  true;
+            lastX = e.offsetX;
+            lastY = e.offsetY;
+             }
+             );
+            //add event listeners for mousemove mouseout mouseup and mouse out
+            canvas.addEventListener("mousemove", draw);
+            canvas.addEventListener('mouseout', () => drawing = false);
+            canvas.addEventListener('mouseup', () => drawing = false);
+            canvas.addEventListener('mousedown', () => drawing = true);
+
+        </Script>
+    </body>
+</html>
